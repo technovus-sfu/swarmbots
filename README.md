@@ -1,6 +1,8 @@
 # Swarmbots :robot:
 Making bots to work in a swarm
 
-## Software
+## Index
+- [Firmware](/firmware)
+- [Software](/software)
 
-## Firmware
+License is available in LICENSE
