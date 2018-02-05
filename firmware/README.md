@@ -1,1 +1,4 @@
-# Swarmbots Firmware Documentation
+# Firmware
+Swarmbots Firmware Documentation
+
+## Setup
