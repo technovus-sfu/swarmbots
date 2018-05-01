@@ -127,45 +127,54 @@ void setup() {
   robotBrake();
 }
 
-void loop() {
-  if(Serial.available() > 0){
-    int command = Serial.read();
-    int motorValue = Serial.read();
-    Serial.flush();
+byte cmd[2];
+bool cmdready = false;
 
+void recieveBytes(){
+  static byte i = 0;
+  while(Serial.available() > 0 && cmdready == false){
+    cmd[i] = Serial.read();
+    i++; 
+    if(i >= 2){
+      i = 0;
+      cmdready = true;
+    }
+  }
+}
+
+void loop() {
+
+  recieveBytes();
+
+  if (cmdready){
+    cmdready = false;
     //command numbering is the same as the numbering of the quadrants in a graph
-    switch(command){
+    switch(cmd[0]){
       case 1:{ //right motor forward
         //controlling forward speed of right motor
-        motorForward(motorRight, motorValue);
+        motorForward(motorRight, cmd[1]);
         
       }break;  
 
       case 2:{ //left motor forward
         //controlling forward speed of left motor
-        motorForward(motorLeft, motorValue);
+        motorForward(motorLeft, cmd[1]);
       
       }break;
 
       case 3:{ //left motor backward
-       //controlling backward speed of left motor
-        motorBackward(motorLeft, motorValue); 
-             
+      //controlling backward speed of left motor
+        motorBackward(motorLeft, cmd[1]); 
+            
       }break;
 
       case 4:{ //right motor backward
-       //controlling backward speed of right motor
-        motorBackward(motorRight, motorValue);
+      //controlling backward speed of right motor
+        motorBackward(motorRight, cmd[1]);
       
       }break;
-
-      default:{
-        robotBrake();  
-      }
     }
-
   }
-  
   ledsToggle();
 }
 
