@@ -36,18 +36,20 @@ def transmit_axis(type, value):
     if type != 'left_trigger' and type != 'right_trigger':
         value = ratio_to_new_size(value, 15, 8)
 
-    print("value: ", value)
-    val = bytearray(indicator.to_bytes(1,byteorder='big'))
-    print(val)
-    val.append(value)
-    print(val)
+    # print("value: ", value)
+    # val = bytearray(indicator.to_bytes(1,byteorder='big'))
+    robo1.write(indicator.to_bytes(1,byteorder='big'))
+    print(indicator.to_bytes(1,byteorder='big'))
+
+    # time.sleep(1)
     # val.append(value)
     # robo1.write()
 
-    robo1.write(val)
-    # print(bytearray(indicator.to_bytes(1,byteorder='big')).append(value))
-    # print(value)
+    robo1.write(value.to_bytes(1,byteorder='big'))
+    print(value.to_bytes(1,byteorder='big'))
 
+    # print(bytearray(indicator.to_bytes(1,byteorder='big')).append(value))
+    
 def joystick_readout():
     joysticks = XInputJoystick.enumerate_devices()
     
@@ -69,8 +71,10 @@ def joystick_readout():
 
 
 transmit_axis('r_thumb_y',32767)
+time.sleep(1)
 transmit_axis('l_thumb_y',32767)
-time.sleep(2)
-transmit_axis('r_thumb_y',-160)
-transmit_axis('l_thumb_y',-160)
+time.sleep(1)
+transmit_axis('r_thumb_y',-6160)
+time.sleep(1)
+transmit_axis('l_thumb_y',-6160)
 #joystick_readout()

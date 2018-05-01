@@ -112,7 +112,7 @@ void robotBrake(){
 
 void setup() {
   Serial.begin(9600);
-  
+  Serial.setTimeout(50);
   motorLeft.pin1 = MOTOR_A_1;
   motorLeft.pin2 = MOTOR_A_2;
 
@@ -132,7 +132,7 @@ bool cmdready = false;
 
 void recieveBytes(){
   static byte i = 0;
-  while(Serial.available() > 0 && cmdready == false){
+  if(Serial.available() > 0 && cmdready == false){
     cmd[i] = Serial.read();
     i++; 
     if(i >= 2){
