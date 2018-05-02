@@ -54,6 +54,7 @@ def joystick_readout():
             print('Joystick',stick.device_number,'button',button,' state:', pressed)
 
 
+
         @stick.event
         def on_axis(axis, value):
             print('Joystick',stick.device_number,'axis',axis ,value)
