@@ -1,3 +1,4 @@
+
 #define LED_1 8
 #define LED_2 11
 
@@ -21,8 +22,8 @@ bool progLedOn = false;
 bool ledToggleOn = true;
 long ledToggleTime = 1000;
 
-//mspeed of motor
-int mspeed = 10;
+//motorSpeed of motor
+int motorSpeed = 90;
 
 //previous button pressed
 char prevButton = ' ';
@@ -89,16 +90,16 @@ void motorSetup(MotorData motor){
   motorBrake(motor);
 }
 
-//sets motor mspeed in forward direction
-void motorForward(MotorData motor, int mspeed){
-  analogWrite(motor.pin1, mspeed);
+//sets motor motorSpeed in forward direction
+void motorForward(MotorData motor, int motorSpeed){
+  analogWrite(motor.pin1, motorSpeed);
   analogWrite(motor.pin2, 0);
 }
 
-//sets motor mspeed in backward direction
-void motorBackward(MotorData motor, int mspeed){
+//sets motor motorSpeed in backward direction
+void motorBackward(MotorData motor, int motorSpeed){
   analogWrite(motor.pin1, 0);
-  analogWrite(motor.pin2, mspeed);
+  analogWrite(motor.pin2, motorSpeed);
 }
 
 //turns off motors
@@ -108,35 +109,55 @@ void motorBrake(MotorData motor){
 }
 
 //sets both motors forward
-void robotForward( int mspeed){
-  motorForward(motorLeft, mspeed);
-  motorForward(motorRight, mspeed);
+void robotForward( int motorSpeed){
+  motorForward(motorLeft, motorSpeed);
+  motorForward(motorRight, motorSpeed);
 
   ledsToggleFast();
   ledsSet(true, true);
 }
 
 //sets both motors backward
-void robotBackward( int mspeed){
-  motorBackward(motorLeft, mspeed);
-  motorBackward(motorRight, mspeed);
+void robotBackward( int motorSpeed){
+  motorBackward(motorLeft, motorSpeed);
+  motorBackward(motorRight, motorSpeed);
 
   ledsSet(false, false);
 }
 
 //sets left motor forward and right motor backward
-void robotLeft( int mspeed){
-  motorBackward(motorLeft, mspeed);
-  motorForward(motorRight, mspeed);
+void robotLeft( int motorSpeed){
+  motorBrake(motorLeft);
+  motorForward(motorRight, motorSpeed);
 
+  unsigned long currentTime = millis();
+  //adds delay to left motor
+  while((millis() - currentTime) < 500){
+    currentTime = millis();
+  }
+
+  //after 500 milliseconds and the while loop finishes looping 
+  //make left motor move forward at half the speed
+  motorForward(motorLeft, motorSpeed/2);
+  
   ledsToggleFast();
   ledsSet(true, false);
 }
 
 //sets right motor forward and left motor backward
-void robotRight( int mspeed){
-  motorForward(motorLeft, mspeed);
-  motorBackward(motorRight, mspeed);
+void robotRight( int motorSpeed){
+  motorForward(motorLeft, motorSpeed);
+  motorBrake(motorRight);
+
+   unsigned long currentTime = millis();
+  //adds delay to right motor
+  while((millis() - currentTime) < 500){
+    currentTime = millis();
+  }
+
+  //after 500 milliseconds and the while loop finishes looping 
+  //make left motor move forward at half the speed
+  motorForward(motorRight, motorSpeed/2);
 
   ledsToggleFast();
   ledsSet(false, true);
@@ -176,61 +197,61 @@ void loop() {
     //Longer the button is pressed, the faster it accelerates
     switch(direction){
       case 'a':{
-        //if prevButton doesn't match current button change mspeed to 0
+        //if prevButton doesn't match current button change motorSpeed to 0
         if(direction != prevButton){
-          mspeed = 90;
+          motorSpeed = 90;
         }
-        robotLeft(mspeed);
-        if(mspeed >= 235){
-          mspeed = 255;
+        robotLeft(motorSpeed);
+        if(motorSpeed >= 235){
+          motorSpeed = 255;
         }
         else{
-          mspeed = mspeed + 20;
+          motorSpeed = motorSpeed + 20;
         }
                
       }break;  
 
       case 'w':{
-        //if prevButton doesn't match current button change mspeed to 0
+        //if prevButton doesn't match current button change motorSpeed to 0
         if(direction != prevButton){
-          mspeed = 90;
+          motorSpeed = 90;
         }
-        robotForward(mspeed);
-        if(mspeed >= 235){
-          mspeed = 255;
+        robotForward(motorSpeed);
+        if(motorSpeed >= 235){
+          motorSpeed = 255;
         }
         else{
-          mspeed = mspeed + 20;
+          motorSpeed = motorSpeed + 20;
         }
       
       }break;
 
       case 's':{
-        //if prevButton doesn't match current button change mspeed to 0
+        //if prevButton doesn't match current button change motorSpeed to 0
         if(direction != prevButton){
-          mspeed = 90;
+          motorSpeed = 90;
         }
-        robotBackward(mspeed);
-        if(mspeed >= 235){
-          mspeed = 255;
+        robotBackward(motorSpeed);
+        if(motorSpeed >= 235){
+          motorSpeed = 255;
         }
         else{
-          mspeed = mspeed + 20;
+          motorSpeed = motorSpeed + 20;
         }
       
       }break;
 
       case 'd':{
-        //if prevButton doesn't match current button change mspeed to initial mspeed
+        //if prevButton doesn't match current button change motorSpeed to initial motorSpeed
         if(direction != prevButton){
-          mspeed = 90;
+          motorSpeed = 90;
         }
-        robotRight(mspeed);
-        if(mspeed >= 235){
-          mspeed = 255;
+        robotRight(motorSpeed);
+        if(motorSpeed >= 235){
+          motorSpeed = 255;
         }
         else{
-          mspeed = mspeed + 20;
+          motorSpeed = motorSpeed + 20;
         }
       
       }break;
@@ -246,8 +267,3 @@ void loop() {
   
   ledsToggle();
 }
-
-
-//Looking to add 
-//motor stop when not pressed
-//Mapping controls to a gamepad controller
