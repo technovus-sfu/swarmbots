@@ -133,7 +133,7 @@ void robotLeft( int motorSpeed){
   unsigned long currentTime = millis();
   //adds delay to left motor
   while((millis() - currentTime) < 500){
-    currentTime = millis();
+    
   }
 
   //after 500 milliseconds and the while loop finishes looping 
@@ -152,7 +152,7 @@ void robotRight( int motorSpeed){
    unsigned long currentTime = millis();
   //adds delay to right motor
   while((millis() - currentTime) < 500){
-    currentTime = millis();
+    
   }
 
   //after 500 milliseconds and the while loop finishes looping 
