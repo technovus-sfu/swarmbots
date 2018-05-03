@@ -1,4 +1,5 @@
 # Contributors :star: :crown:
 ## 2018
-- [Steven Richter](https://github.com/stevenrichter)
-- Muhammad Abid
+- Steven Richter
+- Benjamin Atbi
+- Harkirat Gill
