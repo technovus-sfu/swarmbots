@@ -5,4 +5,5 @@ Making bots to work in a swarm
 - [Firmware](/firmware)
 - [Software](/software)
 
-License is available in LICENSE
+## License
+License is available in [LICENSE](LICENSE)
