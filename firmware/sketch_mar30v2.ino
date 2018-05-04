@@ -138,7 +138,8 @@ void robotLeft( int motorSpeed){
 
   //after 500 milliseconds and the while loop finishes looping 
   //make left motor move forward at half the speed
-  motorForward(motorLeft, motorSpeed/2);
+  int halfSpeed = motorSpeed / 2;
+  motorForward(motorLeft, halfSpeed);
   
   ledsToggleFast();
   ledsSet(true, false);
@@ -157,7 +158,8 @@ void robotRight( int motorSpeed){
 
   //after 500 milliseconds and the while loop finishes looping 
   //make left motor move forward at half the speed
-  motorForward(motorRight, motorSpeed/2);
+  int halfSpeed = motorSpeed / 2;
+  motorForward(motorRight, halfSpeed);
 
   ledsToggleFast();
   ledsSet(false, true);
