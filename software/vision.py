@@ -45,7 +45,7 @@ def find_orientation_block(frame):
 
 # returns the location (of centre) + orientation of the robot
 def find_robots(frame):
-    circles                         = find_location(frame);
+    circles                         = find_circles(frame);
     (green_centre, green_contours)  = find_orientation_block(frame);
     robots = []
     if circles is not None:
@@ -66,5 +66,10 @@ def find_robots(frame):
 
     # returns stats on robots [x_pos; y_pos; angle]
     return robots
+
+
+def find_balls(frame):
+    circles = find_location(frame)
+
 
 
