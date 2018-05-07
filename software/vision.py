@@ -2,14 +2,14 @@ import numpy as np
 import cv2
 import math
 
-# finds coordinates of the circle
-def find_location(frame):
+# finds coordinates of all circles
+def find_circles(frame, minR=0, maxR=0):
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-    minR = 50;
-    maxR = 125;
+    cv2.imshow("gray",gray)
     # # # # # cv2.HoughCircles(image, method, dp, minDist)
-    circles = cv2.HoughCircles(gray,cv2.HOUGH_GRADIENT, 2, (2*.9)*minR,
+    minDist = max((2*.9)*minR,1)
+    circles = cv2.HoughCircles(gray,cv2.HOUGH_GRADIENT, 2, minDist,
         param1=150, param2=100, minRadius=minR, maxRadius=maxR) #150/100
 
     if circles is not None:
@@ -27,16 +27,13 @@ def rangeContours(hsv, colorLower, colorUpper):
     return cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
 # finds coordinates of the green orientation block
-def find_orientation_block(frame):
+def find_color_blocks(frame, lower, upper):
     sensitivity = 50
-    #bgr
-    greenLower = (90, 150, 50)
-    greenUpper = (186, 255, 130)
-
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    cont_frame, contours, hierarchy = rangeContours(frame,greenLower, greenUpper)
+   
+    cont_frame, contours, hierarchy = rangeContours(frame, lower, upper)
     centers = []
-    
+
     for i, cont in enumerate(contours, start=0):
         M = cv2.moments(cont)
         centers.append( [int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"])] )
@@ -45,8 +42,16 @@ def find_orientation_block(frame):
 
 # returns the location (of centre) + orientation of the robot
 def find_robots(frame):
-    circles                         = find_circles(frame);
-    (green_centre, green_contours)  = find_orientation_block(frame);
+    minR = 50; 
+    maxR = 125;
+    
+    circles = cv2.find_circles(frame, minR, maxR)
+    
+    greenLower = (90, 150, 50)
+    greenUpper = (186, 255, 130)
+    
+    #find orientation block
+    (green_centre, green_contours)  = find_color_blocks(frame, greenLower, greenUpper);
     robots = []
     if circles is not None:
         for i in circles[0,:]:
