@@ -6,8 +6,7 @@ import math
 def find_circles(frame, minR=0, maxR=0):
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-    cv2.imshow("gray",gray)
-    # # # # # cv2.HoughCircles(image, method, dp, minDist)
+    # cv2.HoughCircles(image, method, dp, minDist)
     minDist = max((2*.9)*minR,1)
     circles = cv2.HoughCircles(gray,cv2.HOUGH_GRADIENT, 2, minDist,
         param1=150, param2=100, minRadius=minR, maxRadius=maxR) #150/100
@@ -19,19 +18,23 @@ def find_circles(frame, minR=0, maxR=0):
 
 # find contours of color specified
 def rangeContours(hsv, colorLower, colorUpper):
-    mask = cv2.inRange(hsv, colorLower, colorUpper)
+    if colorLower[0] > colorUpper[0]:
+        mask = cv2.inRange(hsv,(0,colorLower[1],colorLower[2]),colorUpper)
+        mask2 = cv2.inRange(hsv,colorLower,(179,colorUpper[1],colorUpper[2]))
+        mask = mask | mask2
+    else:
+        mask = cv2.inRange(hsv, colorLower, colorUpper)
     mask = cv2.erode(mask, None, iterations=2)
     mask = cv2.dilate(mask, None, iterations=2)
-
     # returns contours of the color speicified
     return cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
 # finds coordinates of the green orientation block
 def find_color_blocks(frame, lower, upper):
-    sensitivity = 50
+
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-   
-    cont_frame, contours, hierarchy = rangeContours(frame, lower, upper)
+    
+    cont_frame, contours, hierarchy = rangeContours(hsv, lower, upper)
     centers = []
 
     for i, cont in enumerate(contours, start=0):
