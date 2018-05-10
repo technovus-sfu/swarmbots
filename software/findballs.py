@@ -9,6 +9,6 @@ while(1):
     vision.find_balls(frame)
 
     cv2.imshow("frame",frame)
-    k = cv2.waitKey(0)
+    k = cv2.waitKey(10)
     if k == 27:
         break 

@@ -78,36 +78,62 @@ def find_robots(frame):
     return robots
 
 
-def find_balls(frame):
-    circles = find_circles(frame,50,0)
+def find_balls(frame, balls):
+    circles = find_circles(frame,50,150)
 
-    red_centers, red_contours = find_color_blocks(frame, ball.Lower, ball.Upper)
+    Lower = (164, 200, 120)
+    Upper = (15, 255, 255)
+
+    red_centers, red_contours = find_color_blocks(frame, Lower, Upper)
     cv2.drawContours(frame, red_contours, -1, (0,255,0), 1)
-
-    print("color centres: ", red_contours)
-    print("circles: ",circles)
     
+    print(circles)
+
     # find positions where balls are
     positions = []
     if circles is not None:
-        for i in circles[0,:]:
-            cv2.circle(frame,(i[0],i[1]), i[2] ,(0,0,255),3)
-            cv2.circle(frame,(i[0],i[1]), 1 ,(0,0,255),3)
-            if red_centers is not None:
-                for j in red_centers:
-                    x_delta = i[0] - j[0]
-                    y_delta = i[1] - j[1]
-                    distance = math.hypot(x_delta, y_delta);
-                    if (distance < i[2]*1.5): 
-                        positions.append([i[0], i[1]])
+        for circle in circles[0,:]:
+            cv2.circle(frame,(circle[0],circle[1]), circle[2] ,(0,0,255),3)
+            cv2.circle(frame,(circle[0],circle[1]), 1 ,(0,0,255),3)
+            if len(red_centers) > 0:
+                for center in red_centers:
+                    dist = math.hypot(circle[0] - center[0], circle[1] - center[1])
+                    if dist < circle[2]: 
+                        positions.append(circle)
+
+    # each position finds closest ball, prioritizing live balls, 
+    selected_balls = []
+    selected_balls_live = []
+    if len(positions) > 0:
+        for position in positions:
+            best_dist = None
+            if len(balls) > 0:
+                for ball in balls:
+                    dist = math.hypot(position[0] - ball.pos[0], position[1] - ball.pos[1])
+                    if (dist < best_dist or best_dist == None) and ball.positionisvalid(position):
+                        closest = ball
+                        best_dist = dist
+                        if ball.live:
+                            closest_live = ball
+            
+            selected_balls.append(closest)   
+            selected_balls_live.append(closest_live)
+    
+
+        
+
+    print(positions)
+    for p in positions:
+        cv2.circle(frame, (p[0],p[1]), 3, (255,0,0),3)
+
 
 # find positions where balls are
-# ask balls if a position is within predicted area
+# each position finds closest ball and closest live ball
+# ask balls if that position is within predicted area
     # proximity
     # projected velocity
 # tag each ball with position
-    # if multiple claim same position, closest wins, iced loses 
 # if ball has no position, ice it
-    # if iced ball claims position, de-ice it
+    # if iced ball claims position, revive it
 # if unclaimed position, make new ball and delete iced balls
 
