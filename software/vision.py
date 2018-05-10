@@ -1,8 +1,10 @@
 import numpy as np
 import cv2
 import math
+from ballClass import ball
 
 # finds coordinates of all circles
+# formerly named find_position
 def find_circles(frame, minR=0, maxR=0):
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -74,7 +76,35 @@ def find_robots(frame):
 
 
 def find_balls(frame):
-    circles = find_location(frame)
+    circles = find_circles(frame,50,0)
 
+    red_centers, red_contours = find_color_blocks(frame, ball.Lower, ball.Upper)
+    cv2.drawContours(frame, red_contours, -1, (0,255,0), 1)
 
+    print("color centres: ", red_contours)
+    print("circles: ",circles)
+    
+    # find positions where balls are
+    positions = []
+    if circles is not None:
+        for i in circles[0,:]:
+            cv2.circle(frame,(i[0],i[1]), i[2] ,(0,0,255),3)
+            cv2.circle(frame,(i[0],i[1]), 1 ,(0,0,255),3)
+            if red_centers is not None:
+                for j in red_centers:
+                    x_delta = i[0] - j[0]
+                    y_delta = i[1] - j[1]
+                    distance = math.hypot(x_delta, y_delta);
+                    if (distance < i[2]*1.5): 
+                        positions.append([i[0], i[1]])
+
+# find positions where balls are
+# ask balls if a position is within predicted area
+    # proximity
+    # projected velocity
+# tag each ball with position
+    # if multiple claim same position, closest wins, iced loses 
+# if ball has no position, ice it
+    # if iced ball claims position, de-ice it
+# if unclaimed position, make new ball and delete iced balls
 
