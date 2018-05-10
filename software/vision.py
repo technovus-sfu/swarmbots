@@ -81,6 +81,7 @@ def find_robots(frame):
 def find_balls(frame, balls):
     circles = find_circles(frame,50,150)
 
+    #find_range_contours() supports wrapping around 0
     Lower = (164, 200, 120)
     Upper = (15, 255, 255)
 
@@ -100,35 +101,22 @@ def find_balls(frame, balls):
                     dist = math.hypot(circle[0] - center[0], circle[1] - center[1])
                     if dist < circle[2]: 
                         positions.append(circle)
+                        break
 
-    # each position finds closest ball, prioritizing live balls, 
-    selected_balls = []
-    selected_balls_live = []
-    if len(positions) > 0:
-        for position in positions:
-            best_dist = None
-            if len(balls) > 0:
-                for ball in balls:
-                    dist = math.hypot(position[0] - ball.pos[0], position[1] - ball.pos[1])
-                    if (dist < best_dist or best_dist == None) and ball.positionisvalid(position):
-                        closest = ball
-                        best_dist = dist
-                        if ball.live:
-                            closest_live = ball
-            
-            selected_balls.append(closest)   
-            selected_balls_live.append(closest_live)
+    print("positions: ",positions)
+    for b in balls:
+        if len(positions) > 0:
+            b.pos = positions.pop()
     
-
-        
-
-    print(positions)
-    for p in positions:
-        cv2.circle(frame, (p[0],p[1]), 3, (255,0,0),3)
+    print("positions: ",positions)
+    print("balls: ", balls)
+    while len(positions) > 0:
+        p = positions.pop()
+        balls.append(ball(p[0],p[1],p[2]))
 
 
 # find positions where balls are
-# each position finds closest ball and closest live ball
+# each position finds closest ball
 # ask balls if that position is within predicted area
     # proximity
     # projected velocity
