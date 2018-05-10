@@ -3,7 +3,6 @@ import vision
 from ballClass import ball 
 
 cam = cv2.VideoCapture(0)
-
 while(1):
     got_frame, frame = cam.read()
 
