@@ -1,4 +1,3 @@
-
 #define LED_1 8
 #define LED_2 11
 
@@ -27,6 +26,12 @@ int motorSpeed = 90;
 
 //previous button pressed
 char prevButton = ' ';
+
+//stores the last time the left/right turn is called
+unsigned long previousMillis = 0;
+
+//current time in milliseconds
+unsigned long currentMillis = 0;
 
 void ledsSetup(){
   pinMode(LED_1, OUTPUT);
@@ -130,17 +135,8 @@ void robotLeft( int motorSpeed){
   motorBrake(motorLeft);
   motorForward(motorRight, motorSpeed);
 
-  unsigned long currentTime = millis();
-  //adds delay to left motor
-  while((millis() - currentTime) < 500){
-    
-  }
+  previousMillis = millis();
 
-  //after 500 milliseconds and the while loop finishes looping 
-  //make left motor move forward at half the speed
-  int halfSpeed = motorSpeed / 2;
-  motorForward(motorLeft, halfSpeed);
-  
   ledsToggleFast();
   ledsSet(true, false);
 }
@@ -150,16 +146,7 @@ void robotRight( int motorSpeed){
   motorForward(motorLeft, motorSpeed);
   motorBrake(motorRight);
 
-   unsigned long currentTime = millis();
-  //adds delay to right motor
-  while((millis() - currentTime) < 500){
-    
-  }
-
-  //after 500 milliseconds and the while loop finishes looping 
-  //make left motor move forward at half the speed
-  int halfSpeed = motorSpeed / 2;
-  motorForward(motorRight, halfSpeed);
+  previousMillis = millis();
 
   ledsToggleFast();
   ledsSet(false, true);
@@ -192,6 +179,9 @@ void setup() {
 }
 
 void loop() {
+  //updates the current time
+  currentMillis = millis();
+  
   if(Serial.available() > 0){
     char direction = Serial.read();
     Serial.flush();
@@ -266,6 +256,26 @@ void loop() {
     //set prevButton to current button
     prevButton = direction;
   }
+
+  //checks if the direction is currently in the left or right direction
+  //checks also if 500 milliseconds have passed since left/right button is pressed
+  if(prevButton == 'a' || prevButton == 'd' && (currentMillis - previousMillis) >= 500){
+    int reducedSpeed = motorSpeed - 10;
+    
+    //checks for left button
+    if(prevButton == 'a'){
+      //make left motor move forward at reduced speed
+      motorForward(motorLeft, reducedSpeed);      
+    }
+    
+    //checks for right button
+    else if(prevButton == 'd'){
+      //make right motor move forward at reduced speed
+      motorForward(motorRight, reducedSpeed);
+    }
+    
+  }
   
   ledsToggle();
 }
+
