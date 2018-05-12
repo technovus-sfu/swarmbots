@@ -11,7 +11,7 @@ class system:
 	target = [650,360]
 	goal_post = [65,360]
 
-	robot_positions_prev = [ [0,0,0]*3 ]
+	robot_positions_prev = [ [0,0,0] ]*3
 
 	cart1 = robot()
 	cart2 = robot()
@@ -29,7 +29,7 @@ class system:
 
 			robot_positions = vision.find_robots(frame)
 
-			self.match(robot_positions)
+			robot_positions = self.match(robot_positions)
 
 			ball_position = vision.get_target(frame)
 
@@ -95,14 +95,19 @@ class system:
 
 	# main consistency on array of new robot positions
 	def match(self, robot_positions):
+		 
+		new_positions = [[660,30]] * 3
 
-		new_positions = [[660,30]] * len(self.robot_positions_prev)
-		if len(self.robot_positions_prev) > 2:
-			for i in range(len(self.robot_positions_prev)):
-				for j in range(len(robot_positions)):
-					if math.hypot(self.robot_positions_prev[i][0] - robot_positions[j][0], self.robot_positions_prev[i][1] - robot_positions[j][1]) < 50 \
-					and abs(self.robot_positions_prev[i][2] - robot_positions[j][2]) < 20:
-						new_positions[i] = robot_positions[j]
-						break
+		# if len(self.robot_positions_prev) < len(robot_positions):
+			
+		for i in range(len(robot_positions)):
+			for j in range(len(self.robot_positions_prev)):
+				
+				if math.hypot(self.robot_positions_prev[j][0] - robot_positions[i][0], self.robot_positions_prev[j][1] - robot_positions[i][1]) < 50 \
+				and abs(self.robot_positions_prev[j][2] - robot_positions[i][2]) < 20:
+					
+					new_positions[j] = robot_positions[i]
 
-					robot_positions[:] = [new_positions[:],self.robot_positions_prev[2]]
+					break
+
+		return new_positions

@@ -18,8 +18,9 @@ class robot:
 	def __init__ (self, address = None, target = None):
 		self.address = address
 		self.target_position = target
+		self.port = serial.Serial(address, 9600)
 	#
-	port = serial.Serial(address, 9600)
+	
 
 
 	# set address and target
