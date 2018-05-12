@@ -11,7 +11,7 @@ class system:
 	target = [650,360]
 	goal_post = [65,360]
 
-	robot_positions_prev = [ [0,0,0] ]*3
+	robot_positions_prev = [None] * 3
 
 	cart1 = robot()
 	cart2 = robot()
@@ -51,7 +51,7 @@ class system:
 				self.cart3.current_position = robot_positions[2]
 				carts.append(self.cart3.current_position)
 				# self.cart3.move()
-			#
+			
 			else:
 				print (" cant see robot")
 				self.allstop()
@@ -86,7 +86,6 @@ class system:
 					carts[i].target_position[1] = target[1]+150
 			# print carts[i].target_position
 
-
 	# stops all carts
 	def allstop(self):
 		self.cart1.stop()
@@ -96,18 +95,30 @@ class system:
 	# main consistency on array of new robot positions
 	def match(self, robot_positions):
 		 
-		new_positions = [[660,30]] * 3
+		new_positions = [None] * len(self.robot_positions_prev)
 
-		# if len(self.robot_positions_prev) < len(robot_positions):
+		# keeps track of which new positions have been matched to an old value
+		matched = [0] * len(robot_positions)	
+
+		for i in range(len(self.robot_positions_prev)):
 			
-		for i in range(len(robot_positions)):
-			for j in range(len(self.robot_positions_prev)):
-				
-				if math.hypot(self.robot_positions_prev[j][0] - robot_positions[i][0], self.robot_positions_prev[j][1] - robot_positions[i][1]) < 50 \
-				and abs(self.robot_positions_prev[j][2] - robot_positions[i][2]) < 20:
+			if self.robot_positions_prev[i] != None:
+				for j in range(len(robot_positions)):
 					
-					new_positions[j] = robot_positions[i]
+					if math.hypot(self.robot_positions_prev[i][0] - robot_positions[j][0], self.robot_positions_prev[i][1] - robot_positions[j][1]) < 50 \
+					and abs(self.robot_positions_prev[i][2] - robot_positions[j][2]) < 20:
+						
+						new_positions[i] = robot_positions[j]
+						matched[j] = 1
+						break
+				else:
+					new_positions[i] = self.robot_positions_prev[i]
 
-					break
-
-		return new_positions
+		for pos in new_positions:
+			if pos == None:
+				for i in matched:
+					if i == 0:
+						pos = robot_positions[i]
+						i = 1
+		
+		robot_positions[:] = new_positions[:]
