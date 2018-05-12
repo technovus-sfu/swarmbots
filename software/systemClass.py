@@ -33,8 +33,8 @@ class system:
 
 			ball_position = vision.get_target(frame)
 
-			print " "
-			print robot_positions
+			print (" ")
+			print (robot_positions)
 			carts = []
 			# set target of robots
 			if len(robot_positions) > 0:
@@ -53,7 +53,7 @@ class system:
 				# self.cart3.move()
 			#
 			else:
-				print " cant see robot"
+				print (" cant see robot")
 				self.allstop()
 			# set target to be ball
 			if ball_position:
@@ -72,7 +72,7 @@ class system:
 	def set_target(self, target, robot_positions):
 		# print i in robot_positions
 		carts = [self.cart1, self.cart2, self.cart3]
-		print target
+		print (target)
 		for i in range(0, min(3,len(robot_positions))):
 			# setting x target_pos
 			if carts[i].current_position[0] > target[0]+50:

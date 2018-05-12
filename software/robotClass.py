@@ -31,19 +31,19 @@ class robot:
 	def move(self):
 		self.calc_dist_angle()
 
-		print "angle ", self.angle_diff, "distance", self.distance, "compliment", self.compliment
+		print ("angle ", self.angle_diff, "distance", self.distance, "compliment", self.compliment)
 
 		if 20 <= abs(self.compliment) <= 160 and self.distance > 100:
-			print "orientating"
+			print ("orientating")
 			self.orient()
 
 		elif self.distance > 170:
-			print "moving"
+			print ("moving")
 			if 160 <= abs(self.angle_diff) <= 200:
-				print "should go forward"
+				print ("should go forward")
 				self.forward()
 			elif math.floor(abs(self.angle_diff)) in range (0,20)+range(340,360):
-				print "should go backward"
+				print ("should go backward")
 				self.backward()
 		#
 		else:
@@ -57,7 +57,7 @@ class robot:
 		ratio = int(math.ceil((self.distance*8)/1000))
 		if self.speed < 2:
 			# for i in range(0,ratio):
-			print "forward ", ratio, self.speed
+			print ("forward ", ratio, self.speed)
 			self.port.write("w")
 			self.speed = self.speed+1;
 
@@ -65,14 +65,14 @@ class robot:
 	def backward(self):
 		ratio = int(math.ceil((self.distance*8)/1000))
 		if self.speed > -2:
-			print "backward", ratio, self.speed
+			print ("backward", ratio, self.speed)
 			# for i in range(0,ratio):
 			self.port.write("s")
 			self.speed = self.speed-1;
 
 	# method to stop the robot
 	def stop(self):
-		print "stopped"
+		print ("stopped")
 		self.port.write("q")
 		self.speed = 0
 
@@ -84,11 +84,11 @@ class robot:
 		left_turn_conditions = range(-90,0)+range(90,180)+range(-270,-180)+range(270,360)
 		right_turn_conditions = range(0,90)+range(-180,-90)+range(180, 270)+range(-360,-270)
 		if math.floor(self.angle_diff) in left_turn_conditions and (self.speed > -0.5):
-			print "left"
+			print ("left")
 			self.port.write("a")
 			self.speed = self.speed - 0.5
 		elif math.floor(self.angle_diff) in right_turn_conditions and (self.speed < 0.5):
-			print "right"
+			print ("right")
 			self.port.write("d")
 			self.speed = self.speed + 0.5
 
