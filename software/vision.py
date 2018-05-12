@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import math
+from copy import deepcopy
 
 # finds coordinates of the circle
 def find_location(frame):
@@ -68,10 +69,19 @@ def find_robots(frame):
     return robots
 
 
-def matchRobots(oldPositions, newPositions):
-    for newpos in newPositions:
-        for i in range(len(oldPositions)):
-            if math.hypot(newpos[0] - oldPositions[i][0], newpos[1] - oldPositions[i][1]) < 50 and abs(newpos[2] - oldPositions[i][2]) < 20:
-                oldPositions[i] = newpos
-                break
-    return oldPositions
+class systemClass:
+
+    robot_positions_prev = []
+
+    def match(self, robot_positions):
+		
+        new_positions = [[660,30]] * len(self.robot_positions_prev)
+
+        for i in range(len(self.robot_positions_prev)):
+            for j in range(len(robot_positions)):
+                if math.hypot(self.robot_positions_prev[i][0] - robot_positions[j][0], self.robot_positions_prev[i][1] - robot_positions[j][1]) < 50 \
+                and abs(self.robot_positions_prev[i][2] - robot_positions[j][2]) < 20:
+                    new_positions[i] = robot_positions[j]
+                    break
+
+        robot_positions[:] = new_positions[:]

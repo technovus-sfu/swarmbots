@@ -101,3 +101,10 @@ class robot:
 
 		# print required_orientation, current_orientation, self.angle_diff, self.compliment
 
+	def match(self, robot_positions, self.robot_positions_prev):
+		for newpos in newPositions:
+			for i in range(len(oldPositions)):
+				if math.hypot(newpos[0] - oldPositions[i][0], newpos[1] - oldPositions[i][1]) < 50 and abs(newpos[2] - oldPositions[i][2]) < 20:
+					oldPositions[i] = newpos
+					break
+		return oldPositions
