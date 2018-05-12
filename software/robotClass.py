@@ -20,8 +20,6 @@ class robot:
 		self.target_position = target
 		self.port = serial.Serial(address, 9600)
 	#
-	
-
 
 	# set address and target
 	def initialize(self, address, target):
