@@ -114,21 +114,3 @@ def find_robots(frame):
 
     # returns stats on robots [x_pos; y_pos; angle]
     return robots
-
-
-class systemClass:
-
-    robot_positions_prev = []
-
-    def match(self, robot_positions):
-		
-        new_positions = [[660,30]] * len(self.robot_positions_prev)
-
-        for i in range(len(self.robot_positions_prev)):
-            for j in range(len(robot_positions)):
-                if math.hypot(self.robot_positions_prev[i][0] - robot_positions[j][0], self.robot_positions_prev[i][1] - robot_positions[j][1]) < 50 \
-                and abs(self.robot_positions_prev[i][2] - robot_positions[j][2]) < 20:
-                    new_positions[i] = robot_positions[j]
-                    break
-
-        robot_positions[:] = new_positions[:]

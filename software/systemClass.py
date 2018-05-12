@@ -11,12 +11,18 @@ class system:
 	target = [650,360]
 	goal_post = [65,360]
 
+<<<<<<< HEAD
 	robot_positions_prev = [[0,0,0]] * 3
+=======
+	robot_positions_prev = [[0,0,0],[0,0,0],[0,0,0]]
+	# robot_positions_prev = [None]*3
+>>>>>>> 051f8493ee301e5be12ba315858f18bc3c6ec0ce
 
 	cart1 = robot()
 	cart2 = robot()
 	cart3 = robot()
 
+	#
 	def __init__ (self, address1, address2, address3):
 		self.cart1.initialize(address1, self.target)
 		self.cart2.initialize(address2, self.target)
@@ -28,7 +34,6 @@ class system:
 			(got_frame, frame) = cam.read()
 
 			robot_positions = vision.find_robots(frame)
-
 			robot_positions = self.match(robot_positions)
 
 			ball_position = vision.get_target(frame)
@@ -61,7 +66,7 @@ class system:
 			else:
 				self.target = [650,360]
 			#
-			self.set_target(self.target, robot_positions)
+			self.set_target(robot_positions)
 			self.robot_positions_prev = robot_positions
 
 			cv2.circle(frame,(self.target[0], self.target[1]),2,(0,255,0),3);
@@ -69,21 +74,21 @@ class system:
 			cv2.waitKey(0)
 
 	# set target of all robots
-	def set_target(self, target, robot_positions):
+	def set_target(self, robot_positions):
 		# print i in robot_positions
 		carts = [self.cart1, self.cart2, self.cart3]
-		print (target)
+		print (self.target)
 		for i in range(0, min(3,len(robot_positions))):
 			# setting x target_pos
-			if carts[i].current_position[0] > target[0]+50:
-				carts[i].target_position = [target[0]+150, target[1]]
+			if carts[i].current_position[0] > self.target[0]+50:
+				carts[i].target_position = [self.target[0]+150, self.target[1]]
 			else:
-				carts[i].target_position[0] = target[0]
+				carts[i].target_position[0] = self.target[0]
 				# setting y target_pos
-				if carts[i].current_position[1] < target[1]-50:
-					carts[i].target_position[1] = target[1]-150
+				if carts[i].current_position[1] < self.target[1]-50:
+					carts[i].target_position[1] = self.target[1]-150
 				else:
-					carts[i].target_position[1] = target[1]+150
+					carts[i].target_position[1] = self.target[1]+150
 			# print carts[i].target_position
 
 	# stops all carts
