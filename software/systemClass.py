@@ -11,7 +11,7 @@ class system:
 	target = [650,360]
 	goal_post = [65,360]
 
-	robot_positions_prev = [ []*3 ]
+	robot_positions_prev = [ [0,0,0]*3 ]
 
 	cart1 = robot()
 	cart2 = robot()
@@ -29,6 +29,8 @@ class system:
 
 			robot_positions = vision.find_robots(frame)
 
+			self.match(robot_positions)
+
 			ball_position = vision.get_target(frame)
 
 			print " "
@@ -38,17 +40,17 @@ class system:
 			if len(robot_positions) > 0:
 				self.cart1.current_position = robot_positions[0]
 				carts.append(self.cart1.current_position)
-				self.cart1.move()
+				# self.cart1.move()
 
 			if len(robot_positions) > 1:
 				self.cart2.current_position = robot_positions[1]
 				carts.append(self.cart2.current_position)
-				self.cart2.move()
+				# self.cart2.move()
 
 			if len(robot_positions) >2:
 				self.cart3.current_position = robot_positions[2]
 				carts.append(self.cart3.current_position)
-				self.cart3.move()
+				# self.cart3.move()
 			#
 			else:
 				print " cant see robot"
@@ -92,15 +94,15 @@ class system:
 		self.cart3.stop()
 
 	# main consistency on array of new robot positions
-    def match(self, robot_positions):
-		
-        new_positions = [[660,30]] * len(self.robot_positions_prev)
+	def match(self, robot_positions):
 
-        for i in range(len(self.robot_positions_prev)):
-            for j in range(len(robot_positions)):
-                if math.hypot(self.robot_positions_prev[i][0] - robot_positions[j][0], self.robot_positions_prev[i][1] - robot_positions[j][1]) < 50 \
-                and abs(self.robot_positions_prev[i][2] - robot_positions[j][2]) < 20:
-                    new_positions[i] = robot_positions[j]
-                    break
+		new_positions = [[660,30]] * len(self.robot_positions_prev)
+		if len(self.robot_positions_prev) > 2:
+			for i in range(len(self.robot_positions_prev)):
+				for j in range(len(robot_positions)):
+					if math.hypot(self.robot_positions_prev[i][0] - robot_positions[j][0], self.robot_positions_prev[i][1] - robot_positions[j][1]) < 50 \
+					and abs(self.robot_positions_prev[i][2] - robot_positions[j][2]) < 20:
+						new_positions[i] = robot_positions[j]
+						break
 
-        robot_positions[:] = new_positions[:]
+					robot_positions[:] = [new_positions[:],self.robot_positions_prev[2]]
