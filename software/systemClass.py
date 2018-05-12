@@ -38,17 +38,17 @@ class system:
 			if len(robot_positions) > 0:
 				self.cart1.current_position = robot_positions[0]
 				carts.append(self.cart1.current_position)
-				# cart1.move()
+				self.cart1.move()
 
-				if len(robot_positions) > 1:
-					self.cart2.current_position = robot_positions[1]
-					carts.append(self.cart2.current_position)
-					# cart2.move()
+			if len(robot_positions) > 1:
+				self.cart2.current_position = robot_positions[1]
+				carts.append(self.cart2.current_position)
+				self.cart2.move()
 
-				if len(robot_positions) >2:
-					self.cart3.current_position = robot_positions[2]
-					carts.append(self.cart3.current_position)
-					# cart3.move()
+			if len(robot_positions) >2:
+				self.cart3.current_position = robot_positions[2]
+				carts.append(self.cart3.current_position)
+				self.cart3.move()
 			#
 			else:
 				print " cant see robot"
@@ -73,16 +73,16 @@ class system:
 		print target
 		for i in range(0, min(3,len(robot_positions))):
 			# setting x target_pos
-			if carts[i].current_position[0] > target[0]:
-				carts[i].target_position[0] = target[0]+150
+			if carts[i].current_position[0] > target[0]+50:
+				carts[i].target_position = [target[0]+150, target[1]]
 			else:
-				carts[i].target_position[0] = min(target[0]+200, 1200)
+				carts[i].target_position[0] = target[0]
 				# setting y target_pos
-				if (target[1]-100) <= carts[i].current_position[1] <= (target[1]+100):
-					carts[i].target_position[1] = target[1]+200
+				if carts[i].current_position[1] < target[1]-50:
+					carts[i].target_position[1] = target[1]-150
 				else:
-					carts[i].target_position[1] = target[1]
-			print carts[i].target_position
+					carts[i].target_position[1] = target[1]+150
+			# print carts[i].target_position
 
 
 	# stops all carts
@@ -91,4 +91,16 @@ class system:
 		self.cart2.stop()
 		self.cart3.stop()
 
+	# main consistency on array of new robot positions
+    def match(self, robot_positions):
+		
+        new_positions = [[660,30]] * len(self.robot_positions_prev)
 
+        for i in range(len(self.robot_positions_prev)):
+            for j in range(len(robot_positions)):
+                if math.hypot(self.robot_positions_prev[i][0] - robot_positions[j][0], self.robot_positions_prev[i][1] - robot_positions[j][1]) < 50 \
+                and abs(self.robot_positions_prev[i][2] - robot_positions[j][2]) < 20:
+                    new_positions[i] = robot_positions[j]
+                    break
+
+        robot_positions[:] = new_positions[:]
