@@ -55,8 +55,9 @@ class system:
 				self.allstop()
 			# set target to be ball
 			if ball_position:
-				print ball_position
 				self.target = ball_position
+			else:
+				self.target = [650,360]
 			#
 			self.set_target(self.target, robot_positions)
 			self.robot_positions_prev = robot_positions
@@ -73,7 +74,7 @@ class system:
 		for i in range(0, min(3,len(robot_positions))):
 			# setting x target_pos
 			if carts[i].current_position[0] > target[0]:
-				carts[i].target_position[0] = target[0]
+				carts[i].target_position[0] = target[0]+150
 			else:
 				carts[i].target_position[0] = min(target[0]+200, 1200)
 				# setting y target_pos
