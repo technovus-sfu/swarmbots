@@ -69,20 +69,19 @@ class system:
 	def set_target(self, target, robot_positions):
 		# print i in robot_positions
 		carts = [self.cart1, self.cart2, self.cart3]
-		if target is not None:
-			print ball_position
-			for i in range(0, min(3,len(robot_positions))):
-				# setting x target_pos
-				if carts[i].current_position[0] > target[0]:
-					carts[i].target_position[0] = target[0]
-				else:
-					carts[i].target_position[0] = target[0]+200
+		print target
+		for i in range(0, min(3,len(robot_positions))):
+			# setting x target_pos
+			if carts[i].current_position[0] > target[0]:
+				carts[i].target_position[0] = target[0]
+			else:
+				carts[i].target_position[0] = min(target[0]+200, 1200)
 				# setting y target_pos
-				# if (target[1]-100) <= carts[i].current_position[1] <= (target[1]+100):
-				# 	carts[i].target_position[1] = target[1]+200
-				# else:
-				# 	carts[i].target_position[1] = target[1]
-				print carts[i].target_position
+				if (target[1]-100) <= carts[i].current_position[1] <= (target[1]+100):
+					carts[i].target_position[1] = target[1]+200
+				else:
+					carts[i].target_position[1] = target[1]
+			print carts[i].target_position
 
 
 	# stops all carts
