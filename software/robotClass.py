@@ -6,7 +6,7 @@ class robot:
 
 	address = "/dev/cu.HC-05-DevB"
 	speed = 0;
-	current_position = [0,0,0]
+	current_position = None
 	target_position = [0, 0]
 	distance = 0;
 	angle_diff = 0;
