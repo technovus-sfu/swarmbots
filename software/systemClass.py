@@ -11,12 +11,7 @@ class system:
 	target = [650,360]
 	goal_post = [65,360]
 
-<<<<<<< HEAD
 	robot_positions_prev = [[0,0,0]] * 3
-=======
-	robot_positions_prev = [[0,0,0],[0,0,0],[0,0,0]]
-	# robot_positions_prev = [None]*3
->>>>>>> 051f8493ee301e5be12ba315858f18bc3c6ec0ce
 
 	cart1 = robot()
 	cart2 = robot()
