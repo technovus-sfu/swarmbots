@@ -23,6 +23,7 @@ class system:
 			(got_frame, frame) = cam.read()
 			#get new position of robots
 			new_positions = vision.find_robots(frame)
+			
 			#get new ball position
 			ball_position = vision.get_target(frame)
 
