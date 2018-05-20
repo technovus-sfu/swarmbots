@@ -2,6 +2,7 @@ import serial
 import string
 import math
 
+
 class robot:
 
 	address = "/dev/cu.HC-05-DevB"
@@ -72,7 +73,7 @@ class robot:
 	# method to stop the robot
 	def stop(self):
 		print ("stopped")
-		self.port.write("q")
+		self.port.write(bytearray("q","utf-8"))
 		self.speed = 0
 
 	# method to find the required orientation

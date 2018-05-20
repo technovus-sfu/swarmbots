@@ -33,8 +33,8 @@ def find_location(frame):
     # print circles
 
 # find contours of color specified
-def rangeContours(hsv, colorLower, colorUpper):
-    mask = cv2.inRange(hsv, colorLower, colorUpper)
+def rangeContours(frame, colorLower, colorUpper):
+    mask = cv2.inRange(frame, colorLower, colorUpper)
     mask = cv2.erode(mask, None, iterations=2)
     mask = cv2.dilate(mask, None, iterations=2)
 
@@ -47,18 +47,19 @@ def find_ball(frame):
     #bgr
     redLower = (0, 0, 150)
     redUpper = (100, 100, 255)
+    minR = 15
+    maxR = 80
 
     cont_frame, contours, hierarchy = rangeContours(frame, redLower, redUpper)
-    # centers = []
+    
+    cv2.drawContours(frame, contours, -1, (0,255,0), 1)
+    # centers = [] 
     
     for i, cnt in enumerate(contours, start=0):
         (x,y),radius = cv2.minEnclosingCircle(cnt)
         centre = (int(x), int(y))
         radius = int(radius)
         a = cv2.contourArea(cnt)
-
-        minR = 20;
-        maxR = 80;
 
         if math.pi*minR*minR < a < math.pi*maxR*maxR:
             return [centre[0], centre[1], radius]

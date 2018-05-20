@@ -1,8 +1,8 @@
 from systemClass import *
 
-system = system("/dev/cu.HC-05-DevB", "/dev/cu.HC-05-DevB-1", "/dev/cu.HC-05-DevB-2")
+system = system(["COM5"])
 
-cam = cv2.VideoCapture(0)
+cam = cv2.VideoCapture(3)
 
 ###
 system.play(cam)
