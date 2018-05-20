@@ -5,9 +5,9 @@ from copy import deepcopy
 
 # finds coordinates of the circle
 def find_location(frame):
-    cont_frame, contours, hierarchy = rangeContours(frame, (210, 210, 210), (255, 255, 255))
+    cont_frame, contours, hierarchy = rangeContours(frame, (200, 200, 200), (255, 255, 255))
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    # cv2.imshow('gray', gray)
+    
     circles = []
     minR = 40;
     maxR = 80;
@@ -52,7 +52,7 @@ def find_ball(frame):
 
     cont_frame, contours, hierarchy = rangeContours(frame, redLower, redUpper)
     
-    cv2.drawContours(frame, contours, -1, (0,255,0), 1)
+    # cv2.drawContours(frame, contours, -1, (0,255,0), 1)
     # centers = [] 
     
     for i, cnt in enumerate(contours, start=0):
@@ -80,11 +80,10 @@ def get_target(frame):
 def find_orientation_block(frame):
     sensitivity = 50
     #bgr
-    greenLower = (90, 170, 50)
+    greenLower = (50, 170, 50)
     greenUpper = (170, 255, 130)
 
     # hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    cont_frame, contours, hierarchy = rangeContours(frame, greenLower, greenUpper)
     centers = []
     
     for i, cont in enumerate(contours, start=0):
@@ -97,6 +96,9 @@ def find_orientation_block(frame):
 def find_robots(frame):
     circles                         = find_location(frame);
     (green_centre, green_contours)  = find_orientation_block(frame);
+   
+    cv2.drawContours(frame, green_contours, -1, (255,0,0), 1) #draw green contours
+
     robots = []
     for j, i in enumerate(circles):
         if len(green_centre) > 0:

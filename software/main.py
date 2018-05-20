@@ -1,6 +1,6 @@
 from systemClass import *
 
-system = system(["COM5"])
+system = system(["COM6"])
 
 cam = cv2.VideoCapture(3)
 

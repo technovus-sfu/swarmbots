@@ -1,6 +1,7 @@
 import serial
 import string
 import math
+from itertools import chain
 
 
 class robot:
@@ -19,7 +20,7 @@ class robot:
 	def __init__ (self, address = None, target = None):
 		self.address = address
 		self.target_position = target
-		self.port = serial.Serial(address, 9600)
+		self.port = serial.Serial(address, 9600, write_timeout=2)
 	#
 
 	# set address and target
@@ -58,7 +59,7 @@ class robot:
 		if self.speed < 2:
 			# for i in range(0,ratio):
 			print ("forward ", ratio, self.speed)
-			self.port.write("w")
+			self.port.write(bytearray("w","utf-8"))
 			self.speed = self.speed+1;
 
 	# method to move the robot backward
@@ -67,12 +68,11 @@ class robot:
 		if self.speed > -2:
 			print ("backward", ratio, self.speed)
 			# for i in range(0,ratio):
-			self.port.write("s")
+			self.port.write(bytearray("s","utf-8"))
 			self.speed = self.speed-1;
 
 	# method to stop the robot
 	def stop(self):
-		print ("stopped")
 		self.port.write(bytearray("q","utf-8"))
 		self.speed = 0
 
@@ -81,15 +81,15 @@ class robot:
 		if abs(self.speed) > 0.5:
 			self.speed = 0
 		#
-		left_turn_conditions = range(-90,0)+range(90,180)+range(-270,-180)+range(270,360)
-		right_turn_conditions = range(0,90)+range(-180,-90)+range(180, 270)+range(-360,-270)
+		left_turn_conditions = chain(range(-90,0),range(90,180),range(-270,-180),range(270,360))
+		right_turn_conditions = chain(range(0,90),range(-180,-90),range(180, 270),range(-360,-270))
 		if math.floor(self.angle_diff) in left_turn_conditions and (self.speed > -0.5):
 			print ("left")
-			self.port.write("a")
+			self.port.write(bytearray("a","utf-8"))
 			self.speed = self.speed - 0.5
 		elif math.floor(self.angle_diff) in right_turn_conditions and (self.speed < 0.5):
 			print ("right")
-			self.port.write("d")
+			self.port.write(bytearray("d","utf-8"))
 			self.speed = self.speed + 0.5
 
 	# method to calculate the distance between robot and target and orientation difference

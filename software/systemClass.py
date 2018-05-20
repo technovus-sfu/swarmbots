@@ -27,19 +27,22 @@ class system:
 			#get new ball position
 			ball_position = vision.get_target(frame)
 
-			#assign new positions to appropriate robot.
-			#returns binary list indicating which robots got new position
-			gotnewpos = self.assign_new_positions(new_positions)
+			#assign new positions to robot
+			#temporary solution until multi bots is implimented
+			if(new_positions):
+				self.carts[0].current_position = new_positions[0]
+				gotnewpos= [1]
+			else:
+				gotnewpos = [0]
 
-			print (" ")
-			# print (robot_positions)
+			# print (" ")
+			print (self.carts[0].current_position)
 
 			# either stop or move bot depending if it recieved new position this frame
-			# for val in gotnewpos:
-			# 	if val == 0:
-			# 		self.carts[val].stop()
-			# 	else:
-			# 		self.carts[val].move()
+			if gotnewpos[0] == 0:
+				self.carts[0].stop()
+			else:
+				self.carts[0].move()
 			
 			# set target to be ball
 			if ball_position:
