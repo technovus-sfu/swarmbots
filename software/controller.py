@@ -4,7 +4,7 @@ import serial
 import string
 import math
 
-robo1 = serial.Serial('COM6',9600)
+robo1 = serial.Serial('COM5',9600,write_timeout=2)
 robo1.flushInput()
 
 # return a bytes
@@ -22,12 +22,12 @@ def ratio_to_new_size(value, sourceLength, newLength):
 
 def transmit_axis(type, value):
     indicator = 0
-    if type == 'l_thumb_y':
+    if type == 'r_thumb_y':
         if value > 0:
             indicator = 1
         else:
             indicator = 4
-    if type == 'r_thumb_y':
+    if type == 'l_thumb_y':
         if value > 0:
             indicator = 2
         else:
@@ -35,11 +35,12 @@ def transmit_axis(type, value):
 
     #if thumb axis
     if type != 'left_trigger' and type != 'right_trigger':
-        value = ratio_to_new_size(value, 15, 8)
-
-    robo1.write(indicator.to_bytes(1,byteorder='big'))
-    #print(indicator.to_bytes(1,byteorder='big'))
-    robo1.write(value.to_bytes(1,byteorder='big'))
+        # value = ratio_to_new_size(value, 15, 8)
+        value = int(abs(value) * 255)
+        print(value)
+        robo1.write(indicator.to_bytes(1,byteorder='big'))
+        #print(indicator.to_bytes(1,byteorder='big'))
+        robo1.write(value.to_bytes(1,byteorder='big'))
     #print(value.to_bytes(1,byteorder='big'))
 
     # print(bytearray(indicator.to_bytes(1,byteorder='big')).append(value))
@@ -60,9 +61,11 @@ def joystick_readout():
             print('Joystick',stick.device_number,'axis',axis ,value)
             transmit_axis(axis, value)
 
+    print("Connected")
     while True:
         for stick in joysticks:
             stick.dispatch_events()
+
 
 
 # transmit_axis('r_thumb_y',32767)
@@ -72,4 +75,5 @@ def joystick_readout():
 # transmit_axis('r_thumb_y',-6160)
 # # time.sleep(1)
 # transmit_axis('l_thumb_y',-6160)
+# print("transmitted")
 joystick_readout()

@@ -28,8 +28,7 @@ class system:
 	target = [650,360]
 	goal_post = [65,360]
 
-	robot_positions_prev = [[0,0,0],[0,0,0],[0,0,0]]
-	# robot_positions_prev = [None]*3
+	robot_positions_prev = [[0,0,0]] * 3
 
 	cart1 = robot(whiteLower, 	whiteUpper	, 1)
 	cart2 = robot(blueLower	, 	blueUpper	, 2)
@@ -99,3 +98,4 @@ class system:
 				else:
 					self.carts[i].target_position[1] = self.target[1]+150
 			print self.carts[i].ID, self.carts[i].target_position
+
