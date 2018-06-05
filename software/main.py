@@ -1,6 +1,6 @@
 from systemClass import *
 
-system = system("/dev/cu.HC-05-DevB-1", "/dev/cu.HC-05-DevB-2", "/dev/cu.HC-05-DevB")
+system = system("COM6", "COM7", "COM9")
 
 cam = cv2.VideoCapture(0)
 

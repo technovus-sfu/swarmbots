@@ -6,7 +6,7 @@ import vision
 from robotClass import *
 
 # 1 = carts wont move
-gathering_data = 0;
+gathering_data = 0
 
 # bgr
 sensitivity = 20
@@ -45,7 +45,7 @@ class system:
 	#play function
 	def play(self, cam):
 
-		robot_positions = [[0,0,0],[0,0,0],[0,0,0]]
+		robot_positions = [[0,0,0]]*number_of_robots
 		while 1:
 			(got_frame, frame) = cam.read()
 
@@ -97,5 +97,5 @@ class system:
 					self.carts[i].target_position[1] = self.target[1]-150
 				else:
 					self.carts[i].target_position[1] = self.target[1]+150
-			print self.carts[i].ID, self.carts[i].target_position
+			print (self.carts[i].ID, self.carts[i].target_position)
 
