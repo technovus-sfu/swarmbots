@@ -8,7 +8,7 @@ class robot:
 
 	address = "/dev/cu.HC-05-DevB"
 	speed = 0;
-	current_position = None
+	current_position = [0,0,0]
 	target_position = [0, 0]
 	distance = 0;
 	angle_diff = 0;
@@ -61,15 +61,15 @@ class robot:
 		if abs(self.speed) > 0.5:
 			self.speed = 0
 		#
-		left_turn_conditions = range(-90,0)+range(90,180)+range(-270,-180)+range(270,360)
-		right_turn_conditions = range(0,90)+range(-180,-90)+range(180, 270)+range(-360,-270)
+		left_turn_conditions = chain(range(-90,0),range(90,180),range(-270,-180),range(270,360))
+		right_turn_conditions = chain(range(0,90),range(-180,-90),range(180, 270),range(-360,-270))
 		if math.floor(self.angle_diff) in left_turn_conditions and (self.speed > -0.5):
 			print ("left")
-			self.port.write("a")
+			self.port.write(bytearray("a","utf-8"))
 			self.speed = self.speed - 0.5
 		elif math.floor(self.angle_diff) in right_turn_conditions and (self.speed < 0.5):
 			print ("right")
-			self.port.write("d")
+			self.port.write(bytearray("d","utf-8"))
 			self.speed = self.speed + 0.5
 			
 	# method to move the robot forward

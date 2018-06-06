@@ -3,13 +3,12 @@ import math
 import serial
 
 import vision
+import imgsample as imgsamp 
 from robotClass import *
 
 # 1 = carts wont move
 gathering_data = 0
 
-# bgr
-sensitivity = 20
 # robot 1
 whiteLower  = (230, 230, 230)
 whiteUpper  = (255, 255, 255)
@@ -17,10 +16,14 @@ whiteUpper  = (255, 255, 255)
 blueLower  = (170, 180, 130)
 blueUpper  = (255, 255, 180)
 # robot 3
-brownLower  = (80-sensitivity, 130-sensitivity, 180-sensitivity)
-brownUpper  = (120-sensitivity, 170-sensitivity, 230-sensitivity)
+brownLower  = (80, 130, 180)
+brownUpper  = (120, 170, 230)
 
 number_of_robots = 3
+
+#sensitivity
+sensitivity = 10
+
 
 class system:
 	distance_between_robots = 250
@@ -28,7 +31,7 @@ class system:
 	target = [650,360]
 	goal_post = [65,360]
 
-	robot_positions_prev = [[0,0,0]] * 3
+	robot_positions_prev = [[0,0,0]] * number_of_robots
 
 	cart1 = robot(whiteLower, 	whiteUpper	, 1)
 	cart2 = robot(blueLower	, 	blueUpper	, 2)
@@ -36,6 +39,7 @@ class system:
 
 	carts = [cart1, cart2, cart3]
 
+	cart_color_ranges = [ ]
 	#
 	def __init__ (self, address1, address2, address3):
 		self.cart1.initialize_port(address1, self.target)
@@ -46,22 +50,32 @@ class system:
 	def play(self, cam):
 
 		robot_positions = [[0,0,0]]*number_of_robots
+		
+		colorpicker = imgsamp.activeFrame(cam,imgsamp.MODE_PICKCOLOR)
+
+		for i in range(number_of_robots):
+			midval = colorpicker.analizeframe("Select Robot "+str(i))
+			if midval is not None:
+				self.carts[i].colorLower = (int(midval[0]-sensitivity),int(midval[1]-sensitivity),int(midval[2]-sensitivity))
+				self.carts[i].colorUpper = (int(midval[0]+sensitivity),int(midval[1]+sensitivity),int(midval[2]+sensitivity))
+
+		print(type(self.carts[0].colorLower),type(self.carts[0].colorLower[0]),type(self.carts[1].colorLower),type(self.carts[1].colorLower[0]))
 		while 1:
 			(got_frame, frame) = cam.read()
 			
-			#get new ball position
-			ball_position = vision.get_target(frame)
-
 			# find robots
-			for i in range(0,len(robot_positions)):
+			for i in range(number_of_robots):
 				robot_positions[i] =  vision.find_robots(frame, self.carts[i].colorLower,\
 				 self.carts[i].colorUpper, self.carts[i].ID)
 
-			# find ball
+			#get new ball position
 			ball_position = vision.get_target(frame)
 
 			print (" ")
 			print (robot_positions)
+			for i, cart in enumerate(self.carts):
+				print("cart",i,"lower:",cart.colorLower)
+				print("cart",i,"upper:",cart.colorUpper)
 
 			# set robot current positions and manuever them
 			for i, value in enumerate(robot_positions):
@@ -85,7 +99,12 @@ class system:
 
 			cv2.circle(frame,(self.target[0], self.target[1]),2,(0,255,0),3);
 			cv2.imshow('frame', frame)
-			cv2.waitKey(1)
+			
+			if cv2.waitKey(1) == 27:
+				for i, cart in enumerate(self.carts):
+					cart.stop()
+					print("stopped cart ",i)
+				break
 
 	# set target of all robots
 	def set_robot_target(self):

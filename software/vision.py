@@ -73,6 +73,8 @@ def find_orientation_block(frame):
 
     # hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     centers = []
+
+    cont_frame, contours, hierarchy = rangeContours(frame, greenLower, greenUpper)
     
     for i, cont in enumerate(contours, start=0):
         M = cv2.moments(cont)
